@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}首页{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <script type="text/javascript" src="{{ url_for('static', filename='js/plupload/plupload-2.3.1/js/plupload.full.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/plupload/plupload-2.3.1/js/jquery.plupload.queue/jquery.plupload.queue.min.js') }}"></script>
+	<style>
+		.main{
+			width:95%;
+		}
+	</style>
+    <script type="text/javascript"> 
+	var fileNum = 0;//上传文件个数计数器
+	$(function() {
+		uploader = new plupload.Uploader({
+			runtimes : 'html5',
+			url : "/predict",
+			browse_button : 'pickfiles',
+			max_file_size : '10mb',
+			unique_names : true,
+			multiple_queues : true,
+			chunk_size : '0mb',
+			multi_selection: true,//只能上传一个文件
+			filters : [
+				{title : "jpg,jpeg,png", extensions : "jpg,jpeg,png"}
+			],
+
+		});
+		
+		uploader.bind('Init', function(up, params) {
+		});
+
+		uploader.settings.multipart_params = {
+			
+		};
+
+		uploader.bind('FilesAdded', function(up, files) {
+			timeFlag = true;
+			$("#fileState").text("文件解析中...");
+	      	//$('#myModal').modal('show');
+	      	//$("#progressAll").css("width",0);
+			//$("#progressThis").css("width",0);
+	  	});
+		
+		uploader.bind('QueueChanged' , function(up, files) {
+			uploader.start();
+		});
+		
+		uploader.bind('UploadProgress', function(up, file) {
+			timeFlag = false;
+			//$("#fileState").text("文件上传中...");
+			//$("#progressAll").css("width",((fileNum)*100/up.files.length )+"%");
+			//$("#progressThis").css("width",file.percent+"%");
+		});
+		uploader.bind('Error', function(up, err) {
+			var msg = err.message;
+			if(msg == "File size error."){
+				msg =  '<cms:res value="文件大小不符合要求" />';
+			}
+			if(msg == "File extension error."){
+				msg =  '<cms:res value="文件类型不符合要求" />';
+			}
+			alert(msg);
+			up.refresh();
+		});
+		uploader.bind('FileUploaded', function(up, file, response) {
+			//判断上传是否成功
+			$("#ul").append("<li style='height:410px;float:left;'><img style='max-height:400px;' src='"+response.response+"'></li>")
+			
+			fileNum++;
+		});
+
+		uploader.bind('UploadFile', function(up, file) {
+			if(file.size==0){
+				alert('上传文件大小不能为0字节');
+				$('#myModal').modal('hide');
+				up.files.length = 0;
+				return false;
+			}
+		});
+
+		uploader.bind('UploadComplete', function(up, files) {
+			up.refresh();
+		});
+		
+		uploader.init();
+    });
+    </script>
+{% endblock %}
+
+{% block main %}
+	<div style="font-size:20px;">人脸识别</div><br />
+	<a href="javascript:void(0)" id="pickfiles" class="btn btn-primary">上传图片</a><br /><br />
+    <ul id="ul">
+    </ul>
+{% endblock %}

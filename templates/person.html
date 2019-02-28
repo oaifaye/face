@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}人物{% endblock %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/question.css') }}">
+    <script>
+    	function saveAndJump(){
+    		$("#jump").val(1);
+    		$("#form").submit()
+    	}
+    </script>
+{% endblock %}
+
+{% block main %}
+    <h3 class="page-title">人物</h3>
+    <form action="" method="post" id="form">
+        <div class='form-container'>
+            <div class="form-group">
+                <input type="text" placeholder="请输入人物姓名" name="person_name" value="{{person.person_name}}" class="form-control">
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary">保存</button>
+                <a href="javascript:void(0)" onclick="saveAndJump()" class="btn btn-primary">保存跳转上传</a>
+                <a href="{{ url_for('personlist')}}"  class="btn btn-primary">返回</a>
+            </div>
+        </div>
+        <input type="hidden" value="{{person.id}}" name="id">
+        <input type="hidden" value="0" name="jump" id="jump">
+    </form>
+{% endblock %}

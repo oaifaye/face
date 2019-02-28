@@ -1,0 +1,4 @@
+##人脸识别核心代码
+
+##1.web发布的项目用到get_face_feature_vec.py
+##2.查找发布系统的老虎图片项目用到checkfileface.py 命令：python checkfileface.py pub_pic_clear_face2 huhuhu2.txt huhuhu
